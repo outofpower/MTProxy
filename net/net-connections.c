@@ -1710,16 +1710,16 @@ int create_new_connections (conn_target_job_t CTJ) /* {{{ */ {
       int cfd = -1;
       if (CT->target.s_addr) {
         cfd = client_socket (CT->target.s_addr, CT->port, 0);
-        kprintf (1, "Created NEW connection #%d to %s:%d\n", cfd, inet_ntoa (CT->target), CT->port);
+        vkprintf (1, "Created NEW connection #%d to %s:%d\n", cfd, inet_ntoa (CT->target), CT->port);
       } else {
         cfd = client_socket_ipv6 (CT->target_ipv6, CT->port, SM_IPV6);
-        kprintf (1, "Created NEW ipv6 connection #%d to [%s]:%d\n", cfd, show_ipv6 (CT->target_ipv6), CT->port);
+        vkprintf (1, "Created NEW ipv6 connection #%d to [%s]:%d\n", cfd, show_ipv6 (CT->target_ipv6), CT->port);
       }
       if (cfd < 0) {
         if (CT->target.s_addr) {
-          kprintf (1, "error connecting to %s:%d: %m\n", inet_ntoa (CT->target), CT->port);
+          vkprintf (1, "error connecting to %s:%d: %m\n", inet_ntoa (CT->target), CT->port);
         } else {
-          kprintf (1, "error connecting to [%s]:%d\n", show_ipv6 (CT->target_ipv6), CT->port);
+          vkprintf (1, "error connecting to [%s]:%d\n", show_ipv6 (CT->target_ipv6), CT->port);
         }
         break;
       }
