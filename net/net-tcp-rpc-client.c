@@ -104,7 +104,7 @@ struct tcp_rpc_client_functions default_tcp_rpc_client = {
 
 static int tcp_rpcc_process_nonce_packet (connection_job_t C, struct raw_message *msg) /* {{{ */ {
   struct connection_info *c = CONN_INFO (C);
-  
+  kprintf("tcp_rpcc_process_nonce_packet connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   union {
     struct tcp_rpc_nonce_packet s;
@@ -463,7 +463,7 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
 
 int tcp_rpcc_connected (connection_job_t C) /* {{{ */ {
   struct connection_info *c = CONN_INFO (C);
-
+ kprintf("tcp_rpcc_connected connection_info \n");
   TCP_RPC_DATA(C)->out_packet_num = -2;
   c->last_query_sent_time = precise_now;
 
@@ -508,6 +508,7 @@ int tcp_rpcc_close_connection (connection_job_t C, int who) {
 
 
 int tcp_rpc_client_check_ready (connection_job_t c) {
+  kprintf("tcp_rpc_client_check_ready connection_info \n");
   return TCP_RPCC_FUNC(c)->check_ready (c);
 }
 
@@ -562,7 +563,7 @@ int tcp_rpcc_init_fake_crypto (connection_job_t c) {
 
 int tcp_rpcc_init_outbound (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcc_init_outbound connection_info \n");
   vkprintf (3, "rpcc_init_outbound (%d)\n", c->fd);
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   c->last_query_sent_time = precise_now;
@@ -601,7 +602,7 @@ void tcp_force_enable_dh (void) {
 
 int tcp_rpcc_default_check_perm (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcc_default_check_perm connection_info \n");
   vkprintf (3, "tcp_rpcc_default_check_perm(%d): [%s]:%d -> [%s]:%d\n", c->fd, show_our_ip (C), c->our_port, show_remote_ip (C), c->remote_port);
 
   return RPCF_ALLOW_ENC | tcp_get_default_rpc_flags(); 
@@ -609,7 +610,7 @@ int tcp_rpcc_default_check_perm (connection_job_t C) {
 
 int tcp_rpcc_init_crypto (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcc_init_crypto connection_info \n");
   if (!(TCP_RPC_DATA(C)->crypto_flags & RPCF_ALLOW_ENC)) {
     return tcp_rpcc_init_fake_crypto (C);
   }
@@ -665,7 +666,7 @@ int tcp_rpcc_init_crypto (connection_job_t C) {
 
 int tcp_rpcc_start_crypto (connection_job_t C, char *nonce, int key_select, unsigned char *temp_key, int temp_key_len) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcc_start_crypto connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
 
   vkprintf (2, "rpcc_start_crypto: key_select = %d\n", key_select);
