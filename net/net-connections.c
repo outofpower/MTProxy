@@ -1674,7 +1674,6 @@ void destroy_dead_target_connections (conn_target_job_t CTJ) /* {{{ */ {
 */
 int create_new_connections (conn_target_job_t CTJ) /* {{{ */ {
   assert_main_thread ();
-
   destroy_dead_target_connections (CTJ);
   struct conn_target_info *CT = CONN_TARGET_INFO (CTJ);
 
@@ -1711,16 +1710,16 @@ int create_new_connections (conn_target_job_t CTJ) /* {{{ */ {
       int cfd = -1;
       if (CT->target.s_addr) {
         cfd = client_socket (CT->target.s_addr, CT->port, 0);
-        vkprintf (1, "Created NEW connection #%d to %s:%d\n", cfd, inet_ntoa (CT->target), CT->port);
+        kprintf (1, "Created NEW connection #%d to %s:%d\n", cfd, inet_ntoa (CT->target), CT->port);
       } else {
         cfd = client_socket_ipv6 (CT->target_ipv6, CT->port, SM_IPV6);
-        vkprintf (1, "Created NEW ipv6 connection #%d to [%s]:%d\n", cfd, show_ipv6 (CT->target_ipv6), CT->port);
+        kprintf (1, "Created NEW ipv6 connection #%d to [%s]:%d\n", cfd, show_ipv6 (CT->target_ipv6), CT->port);
       }
       if (cfd < 0) {
         if (CT->target.s_addr) {
-          vkprintf (1, "error connecting to %s:%d: %m\n", inet_ntoa (CT->target), CT->port);
+          kprintf (1, "error connecting to %s:%d: %m\n", inet_ntoa (CT->target), CT->port);
         } else {
-          vkprintf (1, "error connecting to [%s]:%d\n", show_ipv6 (CT->target_ipv6), CT->port);
+          kprintf (1, "error connecting to [%s]:%d\n", show_ipv6 (CT->target_ipv6), CT->port);
         }
         break;
       }
@@ -1942,7 +1941,6 @@ conn_target_job_t create_target (struct conn_target_info *source, int *was_creat
     return NULL;
   }
   pthread_mutex_lock (&TargetsLock);
-
   conn_target_job_t T = 
     source->target.s_addr ? 
     find_target (source->target, source->port, source->type, source->extra, 0, 0) :
@@ -1983,8 +1981,10 @@ conn_target_job_t create_target (struct conn_target_info *source, int *was_creat
     MODULE_STAT->allocated_targets ++;
 
     if (source->target.s_addr) {
+      kprintf("port ipv4 %s %d \n", inet_ntoa(source->target),source->port);
       find_target (source->target, source->port, source->type, source->extra, 1, T);
     } else {
+      kprintf("port ipv6 %s %d \n",inet_ntoa(source->target),source->port);
       find_target_ipv6 (source->target_ipv6, source->port, source->type, source->extra, 1, T);
     }
 

@@ -146,7 +146,7 @@ conn_target_job_t *cfg_parse_server_port (struct mf_config *MC, int flags) {
     syntax ("too many targets (%d)", MC->tot_targets);
     return 0;
   }
-
+  kprintf("cfg_parse_server_port tot_targets %d\n",MC->tot_targets);
   struct hostent *h = cfg_gethost ();
   if (!h) {
     return 0;

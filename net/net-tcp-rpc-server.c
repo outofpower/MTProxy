@@ -553,7 +553,11 @@ int tcp_rpcs_default_check_perm (connection_job_t C) {
 
 int tcp_rpcs_init_crypto (connection_job_t C, struct tcp_rpc_nonce_packet *P) {
   struct connection_info *c = CONN_INFO (C);
-
+  //  struct in_addr ip1,ip2;
+  // ip1.s_addr = c->our_ip;
+  // ip2.s_addr  = c->remote_ip;
+  // kprintf("tcp_rpcs_init_crypto connection_info %s  %s\n",inet_ntoa(ip1),inet_ntoa(ip2));
+  kprintf("tcp_rpcs_init_crypto connection_info");
 //  fprintf (stderr, "rpcs_init_crypto (%p [fd=%d], '%.*s')\n", c, c->fd, key_len, key);
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
 

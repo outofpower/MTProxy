@@ -1509,7 +1509,7 @@ void job_message_send (JOB_REF_ARG (job), JOB_REF_ARG (src), unsigned int type, 
   M->destructor = destroy;
   memcpy (M->payload, payload, payload_ints * 4);
   (dup ? rwm_clone : rwm_move) (&M->message, raw);
-
+  kprintf("job_message_send 111");
   struct job_message_queue *q = job_message_queue_get (job);
   mpq_push_w (q->unsorted, M, 0);
 

@@ -41,7 +41,11 @@
 
 void tcp_rpc_conn_send_init (connection_job_t C, struct raw_message *raw, int flags) {
   struct connection_info *c = CONN_INFO (C);
-  vkprintf (3, "%s: sending message of size %d to conn fd=%d\n", __func__, raw->total_bytes, c->fd);
+  // struct in_addr ip1,ip2;
+  // ip1.s_addr = c->our_ip;
+  // ip2.s_addr  = c->remote_ip;
+  // kprintf("tcp_rpc_conn_send_init connection_info %s  %s\n",inet_ntoa(ip1),inet_ntoa(ip2));
+  kprintf (3, "%s: sending message of size %d to conn fd=%d\n", __func__, raw->total_bytes, c->fd);
   assert (!(raw->total_bytes & 3));
   int Q[2];
   Q[0] = raw->total_bytes + 12;
