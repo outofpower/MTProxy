@@ -244,7 +244,7 @@ static int tcp_rpcc_send_handshake_packet (connection_job_t C) /* {{{ */ {
   // ip1.s_addr = c->our_ip;
   // ip2.s_addr  = c->remote_ip;
   // kprintf("tcp_rpcc_send_handshake_packet connection_info %s  %s\n",inet_ntoa(ip1),inet_ntoa(ip2));
-  kprintf("tcp_rpcc_send_handshake_packet connection_info");
+  kprintf("tcp_rpcc_send_handshake_packet connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA (C);
   struct tcp_rpc_handshake_packet P;
   if (!PID.ip) {
@@ -272,7 +272,7 @@ static int tcp_rpcc_send_handshake_error_packet (connection_job_t C, int error_c
   // ip1.s_addr = c->our_ip;
   // ip2.s_addr  = c->remote_ip;
   // kprintf("tcp_rpcc_send_handshake_error_packet connection_info %s  %s\n",inet_ntoa(ip1),inet_ntoa(ip2));
-  kprintf("tcp_rpcc_send_handshake_error_packet connection_info");
+  kprintf("tcp_rpcc_send_handshake_error_packet connection_info \n");
   struct tcp_rpc_handshake_error_packet P;
   if (!PID.pid) {
     init_client_PID (c->our_ip);
@@ -293,7 +293,7 @@ static int tcp_rpcc_process_handshake_packet (connection_job_t C, struct raw_mes
   // ip1.s_addr = c->our_ip;
   // ip2.s_addr  = c->remote_ip;
   // kprintf("tcp_rpcc_process_handshake_packet connection_info %s  %s\n",inet_ntoa(ip1),inet_ntoa(ip2));
-  kprintf("tcp_rpcc_process_handshake_packet connection_info");
+  kprintf("tcp_rpcc_process_handshake_packet connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   struct tcp_rpc_handshake_packet P;
 
