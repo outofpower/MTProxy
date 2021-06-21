@@ -610,11 +610,12 @@ kprintf("tcp_rpcc_default_check_perm connection_info \n");
 
 int tcp_rpcc_init_crypto (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-kprintf("tcp_rpcc_init_crypto connection_info \n");
+  kprintf("tcp_rpcc_init_crypto connection_info \n");
   if (!(TCP_RPC_DATA(C)->crypto_flags & RPCF_ALLOW_ENC)) {
+    kprintf("tcp_rpcc_init_crypto tcp_rpcc_init_fake_crypto \n");
     return tcp_rpcc_init_fake_crypto (C);
   }
-
+  
   TCP_RPC_DATA(C)->nonce_time = time (0);
 
   aes_generate_nonce (TCP_RPC_DATA(C)->nonce);
