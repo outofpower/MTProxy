@@ -508,7 +508,7 @@ int tcp_rpcc_close_connection (connection_job_t C, int who) {
 
 
 int tcp_rpc_client_check_ready (connection_job_t c) {
-  kprintf("tcp_rpc_client_check_ready connection_info \n");
+  // kprintf("tcp_rpc_client_check_ready connection_info \n");
   return TCP_RPCC_FUNC(c)->check_ready (c);
 }
 
