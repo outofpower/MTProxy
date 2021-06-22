@@ -545,7 +545,7 @@ int tcp_rpcc_default_check_ready (connection_job_t C) {
   }
    
   if (c->status == conn_working) {
-    kprintf("tcp_rpcc_default_check_ready cr_ok line = %d \n",__LINE__);
+    // kprintf("tcp_rpcc_default_check_ready cr_ok line = %d \n",__LINE__);
     return c->ready = cr_ok;
   }
 
