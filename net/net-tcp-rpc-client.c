@@ -545,7 +545,7 @@ int tcp_rpcc_default_check_ready (connection_job_t C) {
   }
    
   if (c->status == conn_working) {
-    // kprintf("tcp_rpcc_default_check_ready cr_ok line = %d \n",__LINE__);
+    kprintf("tcp_rpcc_default_check_ready cr_ok line = %d \n",__LINE__);
     return c->ready = cr_ok;
   }
 
@@ -680,24 +680,24 @@ int tcp_rpcc_init_crypto (connection_job_t C) {
 
 int tcp_rpcc_start_crypto (connection_job_t C, char *nonce, int key_select, unsigned char *temp_key, int temp_key_len) {
   struct connection_info *c = CONN_INFO (C);
-kprintf("tcp_rpcc_start_crypto connection_info \n");
+  kprintf("tcp_rpcc_start_crypto connection_info line %d \n",__LINE__);
 // return 1;
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
 
   vkprintf (2, "rpcc_start_crypto: key_select = %d\n", key_select);
 
   if (c->crypto) {
-    kprintf("tcp_rpcc_start_crypto connection_info \n");
+    kprintf("tcp_rpcc_start_crypto connection_info line %d \n",__LINE__);
     return -1;
   }
 
   if (c->in.total_bytes || c->out.total_bytes || !D->nonce_time) {
-    kprintf("tcp_rpcc_start_crypto connection_info \n");
+    kprintf("tcp_rpcc_start_crypto connection_info line %d \n",__LINE__);
     return -1;
   }
 
   if (!key_select) {
-    kprintf("tcp_rpcc_start_crypto connection_info \n");
+    kprintf("tcp_rpcc_start_crypto connection_info line %d \n",__LINE__);
     return -1;
   }
 
@@ -706,12 +706,12 @@ kprintf("tcp_rpcc_start_crypto connection_info \n");
   struct aes_key_data aes_keys;
 
   if (aes_create_keys (&aes_keys, 1, nonce, D->nonce, D->nonce_time, nat_translate_ip (c->remote_ip), c->remote_port, c->remote_ipv6, nat_translate_ip (c->our_ip), c->our_port, c->our_ipv6, secret, temp_key, temp_key_len) < 0) {
-    kprintf("tcp_rpcc_start_crypto connection_info \n");
+    kprintf("tcp_rpcc_start_crypto connection_info line %d \n",__LINE__);
     return -1;
   }
 
   if (aes_crypto_init (C, &aes_keys, sizeof (aes_keys)) < 0) {
-    kprintf("tcp_rpcc_start_crypto connection_info \n");
+    kprintf("tcp_rpcc_start_crypto connection_info line %d \n",__LINE__);
     return -1;
   }
 
