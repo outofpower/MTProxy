@@ -105,7 +105,7 @@ struct tcp_rpc_client_functions default_tcp_rpc_client = {
 static int tcp_rpcc_process_nonce_packet (connection_job_t C, struct raw_message *msg) /* {{{ */ {
   struct connection_info *c = CONN_INFO (C);
   kprintf("tcp_rpcc_process_nonce_packet connection_info \n");
-  return 0;
+  // return 0;
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   union {
     struct tcp_rpc_nonce_packet s;
@@ -540,7 +540,7 @@ int tcp_rpcc_default_check_ready (connection_job_t C) {
       kprintf("tcp_rpcc_default_check_ready cr_failed line = %d \n",__LINE__);
       return c->ready = cr_failed;
     }
-    kprintf("tcp_rpcc_default_check_ready cr_notyet line = %d \n",__LINE__);
+    kprintf("tcp_rpcc_default_check_ready cr_notyet line = %d in_packet_num = %d \n",__LINE__,TCP_RPC_DATA(C)->in_packet_num);
     return c->ready = cr_notyet;
   }
    
