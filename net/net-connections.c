@@ -1443,11 +1443,14 @@ connection_job_t connection_get_by_fd_generation (int fd, int generation) {
 int server_check_ready (connection_job_t C) /* {{{ */ {
   struct connection_info *c = CONN_INFO (C);
   if (c->status == conn_none || c->status == conn_connecting) {
+    kprintf("server_check_ready cr_notyet \n");
     return c->ready = cr_notyet;
   }
   if (c->status == conn_error || c->ready == cr_failed) {
+   kprintf("server_check_ready cr_failed \n");
     return c->ready = cr_failed;
   }
+  kprintf("server_check_ready cr_ok \n");
   return c->ready = cr_ok;
 }
 /* }}} */

@@ -443,6 +443,7 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
 
       rwm_free (&msg);
       if (res < 0) {
+        kprintf("tcp_rpcc_parse_execute line = %d \n",__LINE__);
         fail_connection (C, res);
         return 0;
       }
