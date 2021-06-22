@@ -424,9 +424,9 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
       if (packet_num == -2) {
         res = tcp_rpcc_process_nonce_packet (C, &msg);
         if (res >= 0) {
-          // res = tcp_rpcc_send_handshake_packet (C);
+          res = tcp_rpcc_send_handshake_packet (C);
           //强制开启通信
-          notification_event_insert_tcp_conn_ready (C);
+          // notification_event_insert_tcp_conn_ready (C);
         }
       } else if (packet_num == -1) {
         res = tcp_rpcc_process_handshake_packet (C, &msg);
