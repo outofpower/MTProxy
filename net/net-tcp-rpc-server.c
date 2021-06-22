@@ -504,10 +504,12 @@ int tcp_rpcs_init_accepted (connection_job_t C) {
     int res = TCP_RPCS_FUNC(C)->rpc_check_perm (C);
     vkprintf (4, "tcp_rpcs_check_perm for connection %d: [%s]:%d -> [%s]:%d = %d\n", c->fd, show_remote_ip (C), c->remote_port, show_our_ip (C), c->our_port, res);
     if (res < 0) {
+      kprintf("tcp_rpcs_init_accepted res < 0 line = %d \n",__LINE__);
       return res;
     }
     res &= RPCF_ALLOW_UNENC | RPCF_ALLOW_ENC | RPCF_REQ_DH | RPCF_ALLOW_SKIP_DH;
     if (!(res & (RPCF_ALLOW_UNENC | RPCF_ALLOW_ENC))) {
+      kprintf("tcp_rpcs_init_accepted res < 0 line = %d \n",__LINE__);
       return -1;
     }
 
@@ -518,7 +520,7 @@ int tcp_rpcs_init_accepted (connection_job_t C) {
 
   TCP_RPC_DATA(C)->in_packet_num = -2;
   TCP_RPC_DATA(C)->out_packet_num = -2;
-  
+  kprintf("tcp_rpcs_init_accepted res = 0 line = %d \n",__LINE__);
   return 0;
 }
 
@@ -528,6 +530,7 @@ int tcp_rpcs_init_accepted_nohs (connection_job_t c) {
   TCP_RPC_DATA(c)->in_packet_num = -3;
   TCP_RPC_DATA(c)->custom_crc_partial = crc32_partial;
   if (TCP_RPCS_FUNC(c)->rpc_ready) {
+    kprintf("tcp_rpcs_init_accepted_nohs line = %d \n",__LINE__);
     notification_event_insert_tcp_conn_ready (c);
   }
   return 0;
@@ -567,18 +570,22 @@ int tcp_rpcs_init_crypto (connection_job_t C, struct tcp_rpc_nonce_packet *P) {
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
 
   if (c->crypto) {
+    kprintf("tcp_rpcs_init_crypto line = %d \n",__LINE__);
     return -1;
   }
 
   if ((D->crypto_flags & (RPCF_ALLOW_ENC | RPCF_ALLOW_UNENC)) == RPCF_ALLOW_UNENC) {
+     kprintf("tcp_rpcs_init_crypto line = %d \n",__LINE__);
     return tcp_rpcs_init_fake_crypto (C);
   }
 
   if ((D->crypto_flags & (RPCF_ALLOW_ENC | RPCF_ALLOW_UNENC)) != RPCF_ALLOW_ENC) {
+     kprintf("tcp_rpcs_init_crypto line = %d \n",__LINE__);
     return -1;
   }
 
   if (main_secret.key_signature != P->key_select) {
+     kprintf("tcp_rpcs_init_crypto line = %d \n",__LINE__);
     return -1;
   }
 
@@ -623,6 +630,7 @@ int tcp_rpcs_init_crypto (connection_job_t C, struct tcp_rpc_nonce_packet *P) {
   }
 
   if (aes_crypto_init (C, &aes_keys, sizeof (aes_keys)) < 0) {
+     kprintf("tcp_rpcs_init_crypto line = %d \n",__LINE__);
     return -1;
   }
 

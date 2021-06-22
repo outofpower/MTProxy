@@ -395,6 +395,7 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
     if (crc32 != packet_crc32) {
       vkprintf (1, "error while parsing packet: crc32 mismatch: %08x != %08x\n", packet_crc32, crc32);
       fail_connection (C, -3);
+      kprintf("tcp_rpcc_parse_execute line = %d \n",__LINE__);
       rwm_free (&msg);
       return 0;
     }
@@ -415,6 +416,7 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
       vkprintf (1, "error while parsing packet: got packet num %d, expected %d\n", packet_num, D->in_packet_num);
       fail_connection (C, -4);
       rwm_free (&msg);
+      kprintf("tcp_rpcc_parse_execute line = %d \n",__LINE__);
       return 0;
     }
 
@@ -424,9 +426,10 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
       if (packet_num == -2) {
         res = tcp_rpcc_process_nonce_packet (C, &msg);
         if (res >= 0) {
-          res = tcp_rpcc_send_handshake_packet (C);
+          // res = tcp_rpcc_send_handshake_packet (C);
           //强制开启通信
-          // notification_event_insert_tcp_conn_ready (C);
+          D->in_packet_num = -1;
+          notification_event_insert_tcp_conn_ready (C);
         }
       } else if (packet_num == -1) {
         res = tcp_rpcc_process_handshake_packet (C, &msg);
@@ -456,6 +459,7 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
     }
 
     if (res <= 0) {
+      kprintf("tcp_rpcc_parse_execute line = %d \n",__LINE__);
       rwm_free (&msg);
     }
   }
