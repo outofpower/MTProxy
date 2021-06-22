@@ -427,10 +427,10 @@ int tcp_rpcc_parse_execute (connection_job_t C) /* {{{ */ {
       if (packet_num == -2) {
         res = tcp_rpcc_process_nonce_packet (C, &msg);
         if (res >= 0) {
-          // res = tcp_rpcc_send_handshake_packet (C);
+          res = tcp_rpcc_send_handshake_packet (C);
           //强制开启通信
-          D->in_packet_num = -1;
-          notification_event_insert_tcp_conn_ready (C);
+          // D->in_packet_num = -1;
+          // notification_event_insert_tcp_conn_ready (C);
         }
       } else if (packet_num == -1) {
         res = tcp_rpcc_process_handshake_packet (C, &msg);
@@ -681,7 +681,7 @@ int tcp_rpcc_init_crypto (connection_job_t C) {
 int tcp_rpcc_start_crypto (connection_job_t C, char *nonce, int key_select, unsigned char *temp_key, int temp_key_len) {
   struct connection_info *c = CONN_INFO (C);
 kprintf("tcp_rpcc_start_crypto connection_info \n");
-return 1;
+// return 1;
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
 
   vkprintf (2, "rpcc_start_crypto: key_select = %d\n", key_select);
