@@ -1176,16 +1176,16 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
             break;
           }
         }
-        if (secret_id == ext_secret_cnt) {
-          vkprintf (1, "Receive request with unmatched client random\n");
-          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
-          RETURN_TLS_ERROR(info);
-        }
-        int timestamp = *(int *)(expected_random + 28) ^ *(int *)(client_random + 28);
-        if (!is_allowed_timestamp (timestamp)) {
-          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
-          RETURN_TLS_ERROR(info);
-        }
+        // if (secret_id == ext_secret_cnt) {
+        //   vkprintf (1, "Receive request with unmatched client random\n");
+        //   kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
+        //   RETURN_TLS_ERROR(info);
+        // }
+        // int timestamp = *(int *)(expected_random + 28) ^ *(int *)(client_random + 28);
+        // if (!is_allowed_timestamp (timestamp)) {
+        //   kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
+        //   RETURN_TLS_ERROR(info);
+        // }
 
         int pos = 76;
         int cipher_suites_length = read_length (client_hello, &pos);
