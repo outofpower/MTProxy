@@ -939,7 +939,7 @@ static int is_allowed_timestamp (int timestamp) {
 static int proxy_connection (connection_job_t C, const struct domain_info *info) {
   struct connection_info *c = CONN_INFO(C);
   assert (check_conn_functions (&ct_proxy_pass, 0) >= 0);
-  //  kprintf("proxy_connection %s %d \n", inet_ntoa(info->target),c->our_port);
+  kprintf("proxy_connection %s %d \n", inet_ntoa(info->target),c->our_port);
   const char zero[16] = {};
   if (info->target.s_addr == 0 && !memcmp (info->target_ipv6, zero, 16)) {
     vkprintf (0, "failed to proxy request to %s\n", info->domain);
@@ -984,6 +984,7 @@ static int proxy_connection (connection_job_t C, const struct domain_info *info)
 
 int tcp_rpcs_ext_alarm (connection_job_t C) {
   struct tcp_rpc_data *D = TCP_RPC_DATA (C);
+
   if (D->in_packet_num == -3 && default_domain_info != NULL) {
     return proxy_connection (C, default_domain_info);  
   } else {
@@ -992,6 +993,7 @@ int tcp_rpcs_ext_alarm (connection_job_t C) {
 }
 
 int tcp_rpcs_ext_init_accepted (connection_job_t C) {
+  kprintf("tcp_rpcs_ext_init_accepted  \n");
   job_timer_insert (C, precise_now + 10);
   return tcp_rpcs_init_accepted_nohs (C);
 }
@@ -999,7 +1001,7 @@ int tcp_rpcs_ext_init_accepted (connection_job_t C) {
 int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 #define RETURN_TLS_ERROR(info) \
   return proxy_connection (C, info);  
-
+  kprintf("tcp_rpcs_compact_parse_execute  \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA (C);
   if (D->crypto_flags & RPCF_COMPACT_OFF) {
     if (D->in_packet_num != -3) {

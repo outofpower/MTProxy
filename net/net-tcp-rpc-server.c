@@ -99,7 +99,7 @@ struct tcp_rpc_server_functions default_tcp_rpc_server = {
 
 int tcp_rpcs_default_execute (connection_job_t C, int op, struct raw_message *raw) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcs_default_execute connection_info \n");
   vkprintf (3, "%s: fd=%d, op=%d, len=%d\n", __func__, c->fd, op, raw->total_bytes);
   if (op == RPC_PING && raw->total_bytes == 12) {
     c->last_response_time = precise_now;    
@@ -114,6 +114,7 @@ int tcp_rpcs_default_execute (connection_job_t C, int op, struct raw_message *ra
 }
 
 static int tcp_rpcs_process_nonce_packet (connection_job_t C, struct raw_message *msg) {
+  kprintf("tcp_rpcs_process_nonce_packet connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   union {
     struct tcp_rpc_nonce_packet s;
@@ -235,6 +236,7 @@ static int tcp_rpcs_process_nonce_packet (connection_job_t C, struct raw_message
 }
 
 static int tcp_rpcs_send_handshake_packet (connection_job_t c) {
+  kprintf("tcp_rpcs_send_handshake_packet connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA(c);
   struct tcp_rpc_handshake_packet P;
   assert(PID.ip);
@@ -249,6 +251,7 @@ static int tcp_rpcs_send_handshake_packet (connection_job_t c) {
 }
 
 static int tcp_rpcs_send_handshake_error_packet (connection_job_t c, int error_code) {
+ kprintf("tcp_rpcs_send_handshake_error_packet connection_info \n");
   struct tcp_rpc_handshake_error_packet P;
   assert (PID.pid);
   memset (&P, 0, sizeof (P));
@@ -262,7 +265,7 @@ static int tcp_rpcs_send_handshake_error_packet (connection_job_t c, int error_c
 
 static int tcp_rpcs_process_handshake_packet (connection_job_t C, struct raw_message *msg) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcs_process_handshake_packet connection_info \n");
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   struct tcp_rpc_handshake_packet P;
   if (!PID.ip) {
@@ -304,7 +307,7 @@ static int tcp_rpcs_process_handshake_packet (connection_job_t C, struct raw_mes
 
 int tcp_rpcs_parse_execute (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcs_parse_execute connection_info \n");
   vkprintf (4, "%s. in_total_bytes = %d\n", __func__, c->in.total_bytes);  
   struct tcp_rpc_data *D = TCP_RPC_DATA(C);
   int len;
@@ -451,7 +454,7 @@ int tcp_rpcs_parse_execute (connection_job_t C) {
 
 int tcp_rpcs_wakeup (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcs_wakeup connection_info \n");
   notification_event_insert_tcp_conn_wakeup (C);
 
   if (c->out_p.total_bytes > 0) {
@@ -465,7 +468,7 @@ int tcp_rpcs_wakeup (connection_job_t C) {
 
 int tcp_rpcs_alarm (connection_job_t C) {
   struct connection_info *c = CONN_INFO (C);
-
+kprintf("tcp_rpcs_alarm connection_info \n");
   notification_event_insert_tcp_conn_alarm (C);
   
   if (c->out_p.total_bytes > 0) {
@@ -493,7 +496,7 @@ int tcp_rpcs_do_wakeup (connection_job_t c) {
 
 int tcp_rpcs_init_accepted (connection_job_t C) {  
   struct connection_info *c = CONN_INFO (C);
-
+  kprintf("tcp_rpcs_init_accepted  \n");
   c->last_query_sent_time = precise_now;
   TCP_RPC_DATA(C)->custom_crc_partial = crc32_partial;
 
@@ -520,6 +523,7 @@ int tcp_rpcs_init_accepted (connection_job_t C) {
 }
 
 int tcp_rpcs_init_accepted_nohs (connection_job_t c) {
+  kprintf("tcp_rpcs_init_accepted_nohs  \n");
   TCP_RPC_DATA(c)->crypto_flags = RPCF_QUICKACK | RPCF_ALLOW_UNENC;
   TCP_RPC_DATA(c)->in_packet_num = -3;
   TCP_RPC_DATA(c)->custom_crc_partial = crc32_partial;
@@ -530,10 +534,11 @@ int tcp_rpcs_init_accepted_nohs (connection_job_t c) {
 }
 
 int tcp_rpcs_init_fake_crypto (connection_job_t c) {
+  kprintf("tcp_rpcs_init_fake_crypto  \n");
   if (!(TCP_RPC_DATA(c)->crypto_flags & RPCF_ALLOW_UNENC)) {
     return -1;
   }
-
+  kprintf("tcp_rpcs_init_fake_crypto 22222 \n");
   struct tcp_rpc_nonce_packet buf;
   memset (&buf, 0, sizeof (buf));
   buf.type = RPC_NONCE;
