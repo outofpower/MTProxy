@@ -1005,6 +1005,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
   struct tcp_rpc_data *D = TCP_RPC_DATA (C);
   if (D->crypto_flags & RPCF_COMPACT_OFF) {
     if (D->in_packet_num != -3) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       job_timer_remove (C);
     }
     return tcp_rpcs_parse_execute (C);
@@ -1017,21 +1018,26 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 
   while (1) {
     if (D->in_packet_num != -3) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       job_timer_remove (C);
     }
     if (c->flags & C_ERROR) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return NEED_MORE_BYTES;
     }
     if (c->flags & C_STOPPARSE) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return NEED_MORE_BYTES;
     }
     len = c->in.total_bytes; 
     if (len <= 0) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return NEED_MORE_BYTES;
     }
 
     int min_len = (D->flags & RPC_F_MEDIUM) ? 4 : 1;
     if (len < min_len + 8) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return min_len + 8 - len;
     }
 
@@ -1067,6 +1073,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
       if ((packet_len == *(int *)"HEAD" || packet_len == *(int *)"POST" || packet_len == *(int *)"GET " || packet_len == *(int *)"OPTI") && TCP_RPCS_FUNC(C)->http_fallback_type) {
         D->crypto_flags |= RPCF_COMPACT_OFF;
         vkprintf (1, "HTTP type\n");
+        kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
         return tcp_rpcs_parse_execute (C);
       }
 #endif
@@ -1074,6 +1081,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
       // fake tls
       if (c->flags & C_IS_TLS) {
         if (len < 11) {
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           return 11 - len;
         }
 
@@ -1083,12 +1091,14 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         if (memcmp (header, "\x14\x03\x03\x00\x01\x01\x17\x03\x03", 9) != 0) {
           vkprintf (1, "error while parsing packet: bad client dummy ChangeCipherSpec\n");
           fail_connection (C, -1);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           return 0;
         }
 
         min_len = 11 + 256 * header[9] + header[10];
         if (len < min_len) {
           vkprintf (2, "Need %d bytes, but have only %d\n", min_len, len);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           return min_len - len;
         }
 
@@ -1099,6 +1109,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 
         if (c->left_tls_packet_length < 64) {
           vkprintf (1, "error while parsing packet: too short first TLS packet: %d\n", c->left_tls_packet_length);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           fail_connection (C, -1);
           return 0;
         }
@@ -1112,6 +1123,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         assert (rwm_fetch_lookup (&c->in, header, 5) == 5);
         min_len = 5 + 256 * header[3] + header[4];
         if (len < min_len) {
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           return min_len - len;
         }
 
@@ -1121,6 +1133,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 
         const struct domain_info *info = get_sni_domain_info (client_hello, read_len);
         if (info == NULL) {
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(default_domain_info);
         }
 
@@ -1128,15 +1141,18 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 
         if (c->our_port == 80) {
           vkprintf (1, "Receive TLS request on port %d, proxying to %s\n", c->our_port, info->domain);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
 
         if (len > min_len) {
           vkprintf (1, "Too much data in ClientHello, receive %d instead of %d\n", len, min_len);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
         if (len != read_len) {
           vkprintf (1, "Too big ClientHello: receive %d bytes\n", len);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
 
@@ -1146,6 +1162,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 
         if (have_client_random (client_random)) {
           vkprintf (1, "Receive again request with the same client random\n");
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
         add_client_random (client_random);
@@ -1161,10 +1178,12 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         }
         if (secret_id == ext_secret_cnt) {
           vkprintf (1, "Receive request with unmatched client random\n");
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
         int timestamp = *(int *)(expected_random + 28) ^ *(int *)(client_random + 28);
         if (!is_allowed_timestamp (timestamp)) {
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
 
@@ -1172,6 +1191,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         int cipher_suites_length = read_length (client_hello, &pos);
         if (pos + cipher_suites_length > read_len) {
           vkprintf (1, "Too long cipher suites list of length %d\n", cipher_suites_length);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
         while (cipher_suites_length >= 2 && (client_hello[pos] & 0x0F) == 0x0A && (client_hello[pos + 1] & 0x0F) == 0x0A) {
@@ -1181,6 +1201,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         }
         if (cipher_suites_length <= 1 || client_hello[pos] != 0x13 || client_hello[pos + 1] < 0x01 || client_hello[pos + 1] > 0x03) {
           vkprintf (1, "Can't find supported cipher suite\n");
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           RETURN_TLS_ERROR(info);
         }
         unsigned char cipher_suite_id = client_hello[pos + 1];
@@ -1242,11 +1263,13 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         job_signal (JOB_REF_CREATE_PASS (C), JS_RUN);
 
         free (buffer);
+        kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
         return 11; // waiting for dummy ChangeCipherSpec and first packet
       }
 
       if (allow_only_tls && !(c->flags & C_IS_TLS)) {
         vkprintf (1, "Expected TLS-transport\n");
+        kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
         RETURN_TLS_ERROR(default_domain_info);
       }
 
@@ -1256,6 +1279,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
       if (!tmp[1] && !(c->flags & C_IS_TLS)) {
         D->crypto_flags |= RPCF_COMPACT_OFF;
         vkprintf (1, "Long type\n");
+        kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
         return tcp_rpcs_parse_execute (C);
       }
 #endif
@@ -1267,6 +1291,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 #else
         vkprintf (1, "\"random\" 64-byte header: have %d bytes, need %d more bytes to distinguish\n", len, 64 - len);
 #endif
+kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
         return 64 - len;
       }
 
@@ -1351,6 +1376,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
 
       if (ext_secret_cnt > 0) {
         vkprintf (1, "invalid \"random\" 64-byte header, entering global skip mode\n");
+        kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
         return (-1 << 28);
       }
 
@@ -1364,6 +1390,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
       continue;
 #else
       vkprintf (1, "invalid \"random\" 64-byte header, entering global skip mode\n");
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return (-1 << 28);
 #endif
     }
@@ -1388,6 +1415,7 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
         if (packet_len < 0x7f) {
           vkprintf (1, "error while parsing compact packet: got length %d in overlong encoding\n", packet_len);
           fail_connection (C, -1);
+          kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
           return 0;
         }
       } else {
@@ -1400,16 +1428,19 @@ int tcp_rpcs_compact_parse_execute (connection_job_t C) {
     if (packet_len <= 0 || (packet_len & 0xc0000000) || (!(D->flags & RPC_F_PAD) && (packet_len & 3))) {
       vkprintf (1, "error while parsing packet: bad packet length %d\n", packet_len);
       fail_connection (C, -1);
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return 0;
     }
 
     if ((packet_len > TCP_RPCS_FUNC(C)->max_packet_len && TCP_RPCS_FUNC(C)->max_packet_len > 0))  {
       vkprintf (1, "error while parsing packet: bad packet length %d\n", packet_len);
       fail_connection (C, -1);
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return 0;
     }
 
     if (len < packet_len + packet_len_bytes) {
+      kprintf("tcp_rpcs_compact_parse_execute %s %d \n",__FILE__,__LINE__);
       return packet_len + packet_len_bytes - len;
     }
 
